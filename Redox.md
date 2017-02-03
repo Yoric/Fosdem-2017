@@ -11,6 +11,7 @@ David Teller, Mozillian
 - µKernel
 - In Rust
 - Running on existing hardware
+- Young and free
 
 ---
 
@@ -188,29 +189,130 @@ class: middle, center
 # Life in userspace
 
 ---
-# Userspace file systems
 
-// FIXME: Diagram of how it works?
-// FIXME: A simple one. Maybe `/dev/null`.
+# File systems
+
+- Redox supports pluggable file system processes.
+- The kernel implements file *descriptors*, registration and dispatching.
+- Each file system implements files, paths, rights...
+
+```rust
+// Extract of `rand:` filesystem.
+fn read(&mut self, _: usize, buf: &mut [u8]) -> Result<usize> {
+    let mut i = 0;
+    for chunk in buf.chunks_mut(8) {
+        let mut rand = self.prng.next_u64();
+        for b in chunk.iter_mut() {
+            *b = rand as u8;
+            rand = rand >> 8;
+            i += 1;
+        }
+    }
+    Ok(i)
+}
+```
+
+
 ---
 # Userspace drivers
 
-// FIXME: vesad
+- Redox supports pluggable driver processes.
+- The kernel implements address mapping.
+- Guess how IRQs are implemented?
+- Guess how drivers are exposed?
 
 ---
 
 class: middle, center
-# Towards capabilities (WIP)
+# Towards capabilities
+WIP
 
 ---
 
 # About capabilities
 
+- A *security capability* is an unforgeable right to do *something*.
+- If you have a capability, you can use it, share it, drop it, weaken it.
+- In safe programming languages, methods/closures.
+
+- Typical Unices don't have capabilities.
+- User/group, SELinux, GRSecurity, "application firewalls", containers...
+  are much less flexible.
+- Capsicum is a Linux/BSD + capabilities.
+
 ---
 
-# Capabilities in Unix
+# Capabilities in (future) Redox (1)
 
-// FIXME: 1 capability == 1 file
-// FIXME: weakening capabilities == `openat`
-// FIXME: sharing capabilities ~= `pipe` (or sockets)
-// FIXME: Tracking compromised processes.
+- A file descriptor *is* a capabilities.
+- Some file descriptors give you access to other files.
+
+```rust
+// Assume that we already have access to `policy`.
+let policy = File::open("file:/home/yoric/*.txt:r", ...);
+
+// We can use/weaken it to open a specific file.
+let readme = File::open("file:/home/yoric/readme.txt", policy);
+```
+
+---
+
+# Capabilities in (future) Redox (2)
+
+- Use files to send file descriptors.
+
+```rust
+fn main() {
+  let cable = Cable::open("cable:").unwrap(); // Empty path.
+  let pid = Process::fork().unwrap();
+  if pid == 0 {
+    // Child process.
+    // For this simplified example, we assume that this process is
+    // running unprivileged and has somehow dropped rights to open
+    // files.
+
+    // Receive data from `cable`.
+    if let Ok(message) = cable.read() {
+      assert_eq!(message.files.len(), 1);
+      assert_eq!(message.data.len(), 0);
+      assert_eq!(message.key, b"private key"); // The key is typically used to demultiplex messages.
+      // ...
+    }
+  } else {
+    // Parent process.
+    // For this example, it behaves as a sandbox.
+
+    // Open a file on behalf of the other process.
+    let file = File::open("file:user/potus/mail/privkey.txt").unwrap();
+
+    // Now send the file to the other process.
+    cable.write(CableMessage {
+      files: [fd],
+      key: b"private key",
+      data: []
+    }).unwrap();
+  }
+}
+```
+
+- Bonus: we can track compromised capabilities and processes!
+
+---
+
+class: middle, center
+
+# Time to wrap up
+
+---
+
+# Redox
+
+Redox is:
+- cool;
+- promising;
+- incomplete;
+- waiting for you!
+
+https://redox-os.org/
+
+
