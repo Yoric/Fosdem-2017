@@ -66,6 +66,15 @@ class: middle, center
 
 ---
 
+# Rust is...
+
+- A modern systems programming language.
+- Very safe, very fast, very high-level.
+- Candidate for replacing C++ for systems programming.
+- Scriptable compiler.
+
+---
+
 # Zero-cost safety.
 
 // FIXME: Example: `pid`.
