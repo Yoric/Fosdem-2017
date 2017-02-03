@@ -18,7 +18,7 @@ class: middle, center
 
 # About the µKernel
 
-Also, why IoT deserves µKernels.
+Also, why IoT *deserves* µKernels.
 
 ---
 
@@ -47,30 +47,33 @@ Also, why IoT deserves µKernels.
 - Your customizations live in userland.
 - Upgrade the kernel, the drivers, your code independently.
 - No friction.
+- Also, easier to implement livepatching.
 
 ---
 
 # Security + µKernels FTW!
 
----
-
-# µKernels 
-
----
-
-# Why you should consider a µKernel
-
-- Safety.
-- Survivability.
-- Upgradability.
+- One process per file system, driver, security, ...
+- => isolated from the kernel
+- => isolated from each other
+- also, easier to shutdown/restart/upgrade.
 
 ---
 
-## Why you should consider Rust
+class: middle, center
 
-- Zero-cost safety.
+# About Rust
+
+---
+
+# Zero-cost safety.
 
 // FIXME: Example: `pid`.
+
+---
+
+## Also, concurrency
+
 // FIXME: An example of `Send` or `Sync`.
 
 # Life in userspace
