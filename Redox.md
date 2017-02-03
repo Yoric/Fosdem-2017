@@ -85,22 +85,33 @@ class: middle, center
 
 // FIXME: An example of `Send` or `Sync`.
 
+---
+
+class: middle, center
 # Life in userspace
 
-## Userspace file systems
+---
+# Userspace file systems
 
 // FIXME: Diagram of how it works?
 // FIXME: A simple one. Maybe `/dev/null`.
-
-## Userspace drivers
+---
+# Userspace drivers
 
 // FIXME: vesad
 
+---
+
+class: middle, center
 # Towards capabilities (WIP)
 
-## About capabilities
+---
 
-## Capabilities in Unix
+# About capabilities
+
+---
+
+# Capabilities in Unix
 
 // FIXME: 1 capability == 1 file
 // FIXME: weakening capabilities == `openat`
