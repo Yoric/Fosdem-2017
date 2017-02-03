@@ -30,7 +30,7 @@ Also, why IoT *deserves* µKernels.
 
 ---
 
-# Why you can't upgrade your IoT devices/smartphones
+# Android *can't* upgrade
 
 - Your device needs a custom kernel.
 - Your device needs custom drivers.
@@ -40,6 +40,8 @@ Also, why IoT *deserves* µKernels.
   - Can you afford to integrate your new drivers?
   - For how long?
 
+In IoT, only megacorps can afford monolithic kernels.
+
 ---
 
 # IoT + µKernel FTW!
@@ -48,11 +50,13 @@ Also, why IoT *deserves* µKernels.
 - Upgrade the kernel, the drivers, your code independently.
 - No friction.
 - Also, easier to implement livepatching.
+- Also, easier to track compromised processes.
 
 ---
 
 # Security + µKernels FTW!
 
+- The worst that can happen to you is kernel compromise.
 - One process per file system, driver, security, ...
 - => isolated from the kernel
 - => isolated from each other
@@ -70,12 +74,30 @@ class: middle, center
 
 - A modern systems programming language.
 - Very safe, very fast, very high-level.
+- Zero-cost abstractions in most cases.
+- Zero-cost safety in most cases.
 - Candidate for replacing C++ for systems programming.
 - Scriptable compiler.
 
 ---
 
-# Zero-cost safety.
+# Zero-cost abstractions
+
+```rust
+// Compiled with inlining.
+fn main() {                                    // asm: 7 loc
+    let foo_1 = (1..100).filter(|x| x%2 == 0); // asm: 0 loc
+    let foo_2 = foo_1.map(|x| x / 2);          // asm: 0 loc
+    println!("foo_2: {:?}", foo_2);            // asm: 16 loc
+
+    let foo_3 : Vec<u64> = foo_2.collect();    // asm: 67 loc
+    println!("foo_3: {:?}", foo_3);            // asm: 19 loc
+}                                              // asm: 40 loc
+```
+
+---
+
+# Zero-cost safety
 
 // FIXME: Example: `pid`.
 
@@ -116,3 +138,4 @@ class: middle, center
 // FIXME: 1 capability == 1 file
 // FIXME: weakening capabilities == `openat`
 // FIXME: sharing capabilities ~= `pipe` (or sockets)
+// FIXME: Tracking compromised processes.
