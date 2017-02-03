@@ -15,6 +15,10 @@ David Teller, Mozillian
 
 ---
 
+![](screenshot.png)
+
+---
+
 class: middle, center
 
 # About the µKernel
@@ -311,8 +315,7 @@ Redox is:
 - cool;
 - promising;
 - incomplete;
-- waiting for you!
-
-https://redox-os.org/
+- unfunded;
+- waiting for you on https://redox-os.org/ !
 
 
