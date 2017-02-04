@@ -1,21 +1,24 @@
 class: middle, center
 
 # Redox OS
+## A safety-first µKernel in Rust
+
 David Teller, Mozillian
 
 ---
 
 # What is Redox?
 
-- Un*x-y
-- µKernel
-- In Rust
-- Running on existing hardware
-- Young and free
+- A safety-first µKernel in Rust.
+- Un*x-y.
+- Running on existing hardware.
+- Young and free.
 
 ---
 
-![](screenshot.png)
+# Which runs
+
+.fullimage[![](screenshot.png)]
 
 ---
 
@@ -35,17 +38,13 @@ Also, why IoT *deserves* µKernels.
 
 ---
 
-# Android *can't* upgrade
+# Why your smart device *can't* upgrade
 
 - Your device needs a custom kernel.
 - Your device needs custom drivers.
-- => Your life is miserable.
-  - Will upstream accept your patches?
-  - Can you afford to follow upstream?
-  - Can you afford to integrate your new drivers?
-  - For how long?
+- ... game over
 
-In IoT, only megacorps can afford monolithic kernels.
+In IoT, *you* can't afford monolithic kernels.
 
 ---
 
@@ -55,7 +54,7 @@ In IoT, only megacorps can afford monolithic kernels.
 - Upgrade the kernel, the drivers, your code independently.
 - No friction.
 - Also, easier to implement livepatching.
-- Also, easier to track compromised processes.
+- Also, security.
 
 ---
 
@@ -63,9 +62,9 @@ In IoT, only megacorps can afford monolithic kernels.
 
 - The worst that can happen to you is kernel compromise.
 - One process per file system, driver, security, ...
-- => isolated from the kernel
-- => isolated from each other
-- also, easier to shutdown/restart/upgrade.
+- Isolation hampers compromise escalation.
+- Also, easier to track compromised processes.
+- Also, upgrades.
 
 ---
 
@@ -81,7 +80,7 @@ class: middle, center
 - Very safe, very fast, very high-level.
 - Zero-cost abstractions in most cases.
 - Zero-cost safety in most cases.
-- Candidate for replacing C++ for systems programming.
+- Aims to replace C++ for systems programming.
 - Scriptable compiler.
 
 ---
@@ -93,7 +92,6 @@ class: middle, center
 fn main() {                                    // asm: 7 instr
     let foo_1 = (1..100).filter(|x| x%2 == 0); // asm: 0 instr
     let foo_2 = foo_1.map(|x| x / 2);          // asm: 0 instr
-    println!("foo_2: {:?}", foo_2);            // asm: 16 instr
 
     for i in foo_2 {
       print!("=> {}", i);                      // asm: 27 instr
@@ -167,6 +165,10 @@ fn foo() {
   });
 }
 ```
+```
+Ok
+```
+
 
 ---
 
@@ -196,9 +198,9 @@ class: middle, center
 
 # File systems
 
-- Redox supports pluggable file system processes.
+- Pluggable file system processes.
 - The kernel implements file *descriptors*, registration and dispatching.
-- Each file system implements files, paths, rights...
+- Process implements files, paths, ACLs...
 
 ```rust
 // Extract of `rand:` filesystem.
@@ -229,20 +231,34 @@ fn read(&mut self, _: usize, buf: &mut [u8]) -> Result<usize> {
 
 class: middle, center
 # Towards capabilities
-WIP
+Very much a WIP
 
 ---
 
-# About capabilities
+# Capabilities-based security
 
 - A *security capability* is an unforgeable right to do *something*.
 - If you have a capability, you can use it, share it, drop it, weaken it.
-- In safe programming languages, methods/closures.
+- In safe programming languages, encapsulation + methods/closures.
 
-- Typical Unices don't have capabilities.
+---
+
+# What's the point?
+
+- Anything can serve as a sandbox for anything.
+- Avoids messy "global namespace" side-effects.
+- Plays nice with static/dynamic analysis.
+- Dynamic analysis can help you pinpoint compromised processes.
+
+---
+
+# Capabilities in Unix
+
+- Typical Unices don't have (these) capabilities.
 - User/group, SELinux, GRSecurity, "application firewalls", containers...
   are much less flexible.
-- Capsicum is a Linux/BSD + capabilities.
+
+- (Actual capabilities in Unix: Capsicum)
 
 ---
 
@@ -266,40 +282,25 @@ let readme = File::open("file:/home/yoric/readme.txt", policy);
 - Use files to send file descriptors.
 
 ```rust
-fn main() {
-  let cable = Cable::open("cable:").unwrap(); // Empty path.
-  let pid = Process::fork().unwrap();
-  if pid == 0 {
-    // Child process.
-    // For this simplified example, we assume that this process is
-    // running unprivileged and has somehow dropped rights to open
-    // files.
+let cable = Cable::open("cable:").unwrap(); // Empty path.
+let pid = Process::fork().unwrap();
+if pid == 0 {
+  // ... Child process
+} else {
+  // Parent sandbox.
+  // For this example, it behaves as a sandbox.
 
-    // Receive data from `cable`.
-    if let Ok(message) = cable.read() {
-      assert_eq!(message.files.len(), 1);
-      assert_eq!(message.data.len(), 0);
-      assert_eq!(message.key, b"private key"); // The key is typically used to demultiplex messages.
-      // ...
-    }
-  } else {
-    // Parent process.
-    // For this example, it behaves as a sandbox.
+  // Open a file on behalf of the other process.
+  let file = File::open("file:user/potus/mail/privkey.txt", ...).unwrap();
 
-    // Open a file on behalf of the other process.
-    let file = File::open("file:user/potus/mail/privkey.txt").unwrap();
-
-    // Now send the file to the other process.
-    cable.write(CableMessage {
-      files: [fd],
-      key: b"private key",
-      data: []
-    }).unwrap();
-  }
+  // Now send the file to the other process.
+  cable.write(CableMessage {
+    files: [fd],
+    key: b"private key",
+    data: []
+  }).unwrap();
 }
 ```
-
-- Bonus: we can track compromised capabilities and processes!
 
 ---
 
@@ -312,10 +313,9 @@ class: middle, center
 # Redox
 
 Redox is:
-- cool;
-- promising;
-- incomplete;
-- unfunded;
+- designed for safety & security;
+- cool & promising;
+- incomplete & unfunded;
 - waiting for you on https://redox-os.org/ !
 
 
