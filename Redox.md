@@ -24,7 +24,7 @@ David Teller, Mozillian
 
 class: middle, center
 
-# About the µKernel
+# About µKernels
 
 Also, why IoT *deserves* µKernels.
 
@@ -54,12 +54,14 @@ In IoT, *you* can't afford monolithic kernels.
 - Upgrade the kernel, the drivers, your code independently.
 - No friction.
 - Also, easier to implement livepatching.
-- Also, security.
+- Also, safety & security.
+- Also, easier to trim down.
 
 ---
 
 # Security + µKernels FTW!
 
+- Smaller Trusted Computing Base.
 - The worst that can happen to you is kernel compromise.
 - One process per file system, driver, security, ...
 - Isolation hampers compromise escalation.
@@ -316,7 +318,7 @@ class: middle, center
 Redox is:
 - designed for safety & security;
 - cool & promising;
-- incomplete & unfunded;
+- working but incomplete & unfunded;
 - waiting for you on https://redox-os.org/ !
 
 
