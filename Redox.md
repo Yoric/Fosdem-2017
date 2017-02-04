@@ -12,7 +12,8 @@ David Teller, Mozillian
 - A safety-first µKernel in Rust.
 - Un*x-y.
 - Running on existing hardware.
-- Young and free.
+- Clean slate, young and free.
+- ~40 contributors.
 
 ---
 
@@ -315,10 +316,9 @@ class: middle, center
 
 # Redox
 
-Redox is:
-- designed for safety & security;
-- cool & promising;
-- working but incomplete & unfunded;
-- waiting for you on https://redox-os.org/ !
+Redox:
+- uses a µKernel to reduce the TCB;
+- uses Rust to make the TCB more trustworthy;
+- is waiting for you on https://redox-os.org/ !
 
 

@@ -7,11 +7,18 @@
 			div.remark-slide-content {
   margin-top: 2cm;
   font-size: 2em;
+
+  background-image: url(redox.svg);
+  background-position: top right;
+  background-size: 60px;
 }
 
 .fullimage img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
+
+
 		</style>
 	</head>
 	<body>
@@ -30,7 +37,8 @@ David Teller, Mozillian
 - A safety-first µKernel in Rust.
 - Un*x-y.
 - Running on existing hardware.
-- Young and free.
+- Clean slate, young and free.
+- ~40 contributors.
 
 ---
 
@@ -72,12 +80,14 @@ In IoT, *you* can't afford monolithic kernels.
 - Upgrade the kernel, the drivers, your code independently.
 - No friction.
 - Also, easier to implement livepatching.
-- Also, security.
+- Also, safety & security.
+- Also, easier to trim down.
 
 ---
 
 # Security + µKernels FTW!
 
+- Smaller Trusted Computing Base.
 - The worst that can happen to you is kernel compromise.
 - One process per file system, driver, security, ...
 - Isolation hampers compromise escalation.
@@ -331,11 +341,10 @@ class: middle, center
 
 # Redox
 
-Redox is:
-- designed for safety & security;
-- cool & promising;
-- working but incomplete & unfunded;
-- waiting for you on https://redox-os.org/ !
+Redox:
+- uses a µKernel to reduce the TCB;
+- uses Rust to make the TCB more trustworthy;
+- is waiting for you on https://redox-os.org/ !
 
 
 
