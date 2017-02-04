@@ -201,6 +201,7 @@ class: middle, center
 - Pluggable file system processes.
 - The kernel implements file *descriptors*, registration and dispatching.
 - Process implements files, paths, ACLs...
+- Open `file:foo/bar`, `pipe:`, `rand:`, ... to access different file systems.
 
 ```rust
 // Extract of `rand:` filesystem.
